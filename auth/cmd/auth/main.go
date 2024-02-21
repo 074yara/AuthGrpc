@@ -1,7 +1,7 @@
 package main
 
 import (
-	"auth/internal/config"
+	"github.com/074yara/AuthGrpc/auth/internal/config"
 	"log"
 	"log/slog"
 	"os"
