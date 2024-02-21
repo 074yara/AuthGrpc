@@ -1,0 +1,37 @@
+syntax = "proto3";
+package protos;
+option go_package = "github.com/074yara/AuthGrpc/protos/gen/authGrpc";
+
+
+service Auth {
+    rpc Register(RegisterRequest) returns (RegisterResponse);
+    rpc Login(LoginRequest) returns (LoginResponse);
+    rpc IsAdmin(IsAdminRequest) returns (IsAdminResponse);
+}
+
+message RegisterRequest {
+    string email = 1; //Email of user to register
+    string password = 2; //Password of user
+}
+
+message RegisterResponse {
+    int64 user_id = 1; //Id of created user
+}
+
+message LoginRequest {
+    string email = 1;
+    string password = 2;
+    string app_id = 3; //Id of app to log in
+}
+
+message LoginResponse {
+    string token = 1;
+}
+
+message IsAdminRequest {
+    int64 user_id = 1;
+}
+
+message IsAdminResponse {
+    bool is_admin = 1;
+}
