@@ -3,15 +3,13 @@ module github.com/074yara/AuthGrpc/auth
 go 1.22.0
 
 require (
-	github.com/074yara/AuthGrpc/protos v0.0.1
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	gorm.io/gorm v1.25.7
 
 )
 
-replace github.com/074yara/AuthGrpc/protos => ../protos
-
 require (
+	github.com/074yara/AuthGrpc v0.0.2 // indirect
 	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
