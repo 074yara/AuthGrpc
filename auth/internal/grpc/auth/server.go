@@ -2,6 +2,9 @@ package auth
 
 import (
 	"context"
+	"errors"
+	"github.com/074yara/AuthGrpc/auth/internal/domain/services/auth"
+	"github.com/074yara/AuthGrpc/auth/internal/storage"
 	"github.com/074yara/AuthGrpc/protos/gen/authGrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -33,8 +36,10 @@ func (s *ServerAPI) Register(ctx context.Context, req *authGrpc.RegisterRequest)
 	}
 	userId, err := s.auth.RegisterNewUser(ctx, req.GetEmail(), req.GetPassword())
 	if err != nil {
-		//TODO: check for error type: register of already existing user. return more informative error
-		return nil, status.Error(codes.Internal, err.Error())
+		if errors.Is(err, storage.ErrUserExists) {
+			return nil, status.Error(codes.AlreadyExists, "user already exists")
+		}
+		return nil, status.Error(codes.Internal, "internal error")
 	}
 	return &authGrpc.RegisterResponse{UserId: uint64(userId)}, nil
 }
@@ -45,8 +50,10 @@ func (s *ServerAPI) Login(ctx context.Context, req *authGrpc.LoginRequest) (*aut
 	}
 	tokenString, err := s.auth.Login(ctx, req.GetEmail(), req.GetPassword(), uint(req.GetAppId()))
 	if err != nil {
-		//TODO: check for error type: incorrect email/password. return more informative error
-		return nil, status.Error(codes.Internal, err.Error())
+		if errors.Is(err, auth.ErrInvalidCredentials) {
+			return nil, status.Error(codes.InvalidArgument, "user or password is incorrect")
+		}
+		return nil, status.Error(codes.Internal, "internal error")
 	}
 
 	return &authGrpc.LoginResponse{Token: tokenString}, nil
@@ -58,8 +65,10 @@ func (s *ServerAPI) IsAdmin(ctx context.Context, req *authGrpc.IsAdminRequest) (
 	}
 	isAdmin, err := s.auth.IsAdmin(ctx, uint(req.GetUserId()))
 	if err != nil {
-		//TODO: check for error type: return more informative error
-		return nil, status.Error(codes.Internal, err.Error())
+		if errors.Is(err, storage.ErrUserNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
+		return nil, status.Error(codes.Internal, "internal error")
 	}
 	return &authGrpc.IsAdminResponse{IsAdmin: isAdmin}, nil
 }

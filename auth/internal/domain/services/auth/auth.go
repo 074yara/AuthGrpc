@@ -27,7 +27,7 @@ type Auth struct {
 }
 
 type UserSaver interface {
-	SaveUser(ct context.Context, email string, hashPass []byte) (uid uint, err error)
+	SaveUser(ctx context.Context, email string, hashPass []byte) (uid uint, err error)
 }
 
 type UserProvider interface {
@@ -42,14 +42,14 @@ type AppProvider interface {
 // New returns new Auth service
 func New(
 	log *slog.Logger,
-	userSave UserSaver,
+	userSaver UserSaver,
 	userProvider UserProvider,
 	appProvider AppProvider,
 	tokenTTL time.Duration,
 ) *Auth {
 	return &Auth{
 		log:          log,
-		userSaver:    userSave,
+		userSaver:    userSaver,
 		userProvider: userProvider,
 		appProvider:  appProvider,
 		tokenTTL:     tokenTTL,
