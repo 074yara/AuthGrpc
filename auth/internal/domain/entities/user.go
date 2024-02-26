@@ -1,10 +1,7 @@
 package entities
 
-import "gorm.io/gorm"
-
 type User struct {
-	gorm.Model
-}
-
-type UserDTO struct {
+	ID       uint
+	Email    string
+	PassHash []byte
 }
