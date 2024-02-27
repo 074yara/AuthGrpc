@@ -67,7 +67,7 @@ func (a *Auth) Login(ctx context.Context, email, password string, appId uint) (t
 	user, err := a.userProvider.User(ctx, email)
 	if err != nil {
 		if errors.Is(err, storage.ErrUserNotFound) {
-			log.Warn("failed to get user", err.Error())
+			log.Warn("user not found")
 			return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 		}
 		log.Error("failed to get user", err)
@@ -75,7 +75,7 @@ func (a *Auth) Login(ctx context.Context, email, password string, appId uint) (t
 	}
 	if err = bcrypt.CompareHashAndPassword(user.PassHash, []byte(password)); err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
-			log.Warn("incorrect password", err.Error())
+			log.Warn("incorrect password")
 			return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 		}
 		log.Error("failed to compare password", err.Error())

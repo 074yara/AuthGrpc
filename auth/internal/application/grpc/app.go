@@ -25,7 +25,7 @@ func New(log *slog.Logger, authService auth.AuthService, port int) *App {
 }
 
 func (a *App) Run() error {
-	const op = "grpcapp.Run"
+	const op = "grpcApp.Run"
 	log := a.log.With(
 		slog.String("op", op),
 		slog.Int("port", a.port),
