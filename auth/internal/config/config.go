@@ -16,12 +16,27 @@ type Config struct {
 }
 
 type GRPCConfig struct {
+	Host    string        `yaml:"host"`
 	Port    int           `yaml:"port"`
 	Timeout time.Duration `yaml:"timeout"`
 }
 
 func Load() (*Config, error) {
 	path := fetchConfigPath()
+	if path == "" {
+		return nil, errors.New("config path is empty")
+	}
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return nil, errors.New("config file does not exist")
+	}
+	var config Config
+	if err := cleanenv.ReadConfig(path, &config); err != nil {
+		return nil, err
+	}
+	return &config, nil
+}
+
+func LoadByPath(path string) (*Config, error) {
 	if path == "" {
 		return nil, errors.New("config path is empty")
 	}

@@ -89,7 +89,7 @@ func (s *Storage) App(ctx context.Context, appId uint) (entities.App, error) {
 	}
 	row := stmt.QueryRowContext(ctx, int(appId))
 	var app entities.App
-	err = row.Scan(&app.ID, &app.Secret, &app.Name)
+	err = row.Scan(&app.ID, &app.Name, &app.Secret)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return entities.App{}, storage.ErrAppNotFound

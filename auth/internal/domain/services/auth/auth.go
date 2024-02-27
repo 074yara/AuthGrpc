@@ -66,11 +66,11 @@ func (a *Auth) Login(ctx context.Context, email, password string, appId uint) (t
 	)
 	user, err := a.userProvider.User(ctx, email)
 	if err != nil {
-		if errors.Is(err, storage.ErrAppNotFound) {
+		if errors.Is(err, storage.ErrUserNotFound) {
 			log.Warn("failed to get user", err.Error())
 			return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 		}
-		log.Error("failed to get user", err.Error())
+		log.Error("failed to get user", err)
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
 	if err = bcrypt.CompareHashAndPassword(user.PassHash, []byte(password)); err != nil {
@@ -119,7 +119,7 @@ func (a *Auth) RegisterNewUser(ctx context.Context, email, password string) (uin
 		log.Error("failed to save user", err.Error())
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}
-	log.Info("user saved", slog.Uint64("id", uint64(id)))
+	log.Info("user successfully registered", slog.Uint64("id", uint64(id)))
 	return id, err
 }
 
